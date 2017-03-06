@@ -1,35 +1,19 @@
-FROM	python:3.5.2
+FROM ubuntu:16.04
 MAINTAINER dreambox "https://github.com/gitdreambox"
 
-# Set username/password login as a default
-# public authentication will be enabled with AUTHORIZED_KEY ENV
-ENV ROOT_PWD default
-ENV AUTHORIZED_KEY none
+# update aliyun sources
+RUN echo "deb http://mirrors.aliyun.com/ubuntu/ xenial main restricted universe multiverse" > /etc/apt/sources.list
+RUN echo "deb http://mirrors.aliyun.com/ubuntu/ xenial-security main restricted universe multiverse" >> /etc/apt/sources.list
+RUN echo "deb http://mirrors.aliyun.com/ubuntu/ xenial-updates main restricted universe multiverse" >> /etc/apt/sources.list
+RUN echo "deb http://mirrors.aliyun.com/ubuntu/ xenial-proposed main restricted universe multiverse" >> /etc/apt/sources.list
+RUN echo "deb http://mirrors.aliyun.com/ubuntu/ xenial-backports main restricted universe multiverse" >> /etc/apt/sources.list
 
-# update sources
-RUN echo "deb http://mirrors.163.com/debian/ jessie main non-free contrib" > /etc/apt/sources.list
-RUN echo "deb http://mirrors.163.com/debian/ jessie-updates main non-free contrib" >> /etc/apt/sources.list
-RUN echo "deb http://mirrors.163.com/debian/ jessie-backports main non-free contrib" >> /etc/apt/sources.list
-RUN echo "deb http://mirrors.163.com/debian-security/ jessie/updates main non-free contrib" >> /etc/apt/sources.list
+RUN apt-get update && apt-get install -y git libc6-dev-i386 make python
 
-# Install openssh-server
-RUN apt-get update
-RUN apt-get install -y openssh-server
-RUN mkdir -p /var/run/sshd
+ADD xtensa-lx106-elf.tar.bz2 /opt/
+ENV PATH $PATH:/opt/xtensa-lx106-elf/bin/
+VOLUME /build
+WORKDIR /build
 
-# Configure sshd.conf
-## For username/password login
-RUN sed -i "s/PermitRootLogin.*/PermitRootLogin yes/g" /etc/ssh/sshd_config
-
-# Install app
-RUN git clone https://github.com/marcgibbons/django-rest-swagger
-RUN pip install -r /django-rest-swagger/requirements.txt -i http://mirrors.aliyun.com/pypi/simple/ --trusted-host mirrors.aliyun.com
-WORKDIR /django-rest-swagger/example_app
-ENTRYPOINT bash -c "python manage.py migrate --noinput && python manage.py loaddata users && python manage.py runserver 0.0.0.0:8000"
-
-# Expose 22 for SSH access
-EXPOSE 22
-
-COPY start.sh /start.sh
-CMD ["./start.sh", "-bash"]
+CMD bin/bash
 
