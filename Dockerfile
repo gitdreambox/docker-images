@@ -8,7 +8,8 @@ RUN echo "deb http://mirrors.aliyun.com/ubuntu/ xenial-updates main restricted u
 RUN echo "deb http://mirrors.aliyun.com/ubuntu/ xenial-proposed main restricted universe multiverse" >> /etc/apt/sources.list
 RUN echo "deb http://mirrors.aliyun.com/ubuntu/ xenial-backports main restricted universe multiverse" >> /etc/apt/sources.list
 
-RUN apt-get update && apt-get install -y git libc6-dev-i386 make python
+RUN apt-get update 
+RUN apt-get install -y git libc6-dev-i386 make python
 
 ADD xtensa-lx106-elf.tar.bz2 /opt/
 ENV PATH $PATH:/opt/xtensa-lx106-elf/bin/
