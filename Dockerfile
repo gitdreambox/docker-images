@@ -12,6 +12,7 @@ RUN apt-get update
 RUN apt-get install -y libc6-dev-i386 make python
 ADD xtensa-lx106-elf.tar.bz2 /opt/
 ENV PATH $PATH:/opt/xtensa-lx106-elf/bin/
+RUN sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config && echo "jenkins:jenkins" | chpasswd
 VOLUME /build
 WORKDIR /build
 
