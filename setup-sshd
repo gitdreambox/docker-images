@@ -28,10 +28,11 @@
 #  docker run -e "JENKINS_SLAVE_SSH_PUBKEY=<public key>" jenkinsci/ssh-slave
 
 write_key() {
-	mkdir -p /home/root/.ssh
-	echo "$1" > /home/root/.ssh/authorized_keys
-	chown -Rf root:root /home/root/.ssh
-	chmod 0700 -R /home/root/.ssh
+	mkdir -p /root/.ssh
+	chmod 600 /root/.ssh
+	touch /root/.ssh/authorized_keys
+	chmod 600 /root/.ssh/authorized_keys
+	echo "$1" >> /root/.ssh/authorized_keys
 }
 
 if [[ $JENKINS_SLAVE_SSH_PUBKEY == ssh-* ]]; then
