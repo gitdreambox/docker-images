@@ -8,7 +8,7 @@ RUN echo "deb $deb_sources/debian/ jessie main non-free contrib" > /etc/apt/sour
 	echo "deb $deb_sources/debian-security/ jessie/updates main non-free contrib" >> /etc/apt/sources.list
 	
 RUN apt-get update
-RUN apt-get install -y libc6-dev-i386 make python
+RUN apt-get install -y python git libc6-dev-i386 make 
 ADD xtensa-lx106-elf.tar.bz2 /opt/
 ENV PATH $PATH:/opt/xtensa-lx106-elf/bin/
 RUN sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config &&\
